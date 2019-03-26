@@ -1,3 +1,5 @@
+// import {StoreUsers} from 'user';
+
 class Bill{
     constructor(description,amount,splitcount,splitdetails){
         this.Description = description;
@@ -16,16 +18,14 @@ class BillUI{
 
     static addBillToGrid(bill,index){
        const bdgrid = document.getElementById('bill-details-grids') ;
-        //    let bgrid = document.getElementById('bill-grids') ;
        
        let billdetail = document.createElement('div');
        billdetail.className = 'well text-center'
-    //    if(bgrid === null){
+    
             let bgrid = document.createElement('div');
             bgrid.className = 'col-md-3 border m-2 pb-2';
             bgrid.id ='bill-grids';
             bdgrid.appendChild(bgrid);
-    //    }
        
         let billinfo = `
             <span>Description : </span><strong>${bill.Description}</strong><br>
@@ -68,7 +68,8 @@ class BillUI{
     static splitCountSelectList(){
         const splitcountelem = document.getElementById('user-selected');
         splitcountelem.innerHTML='';
-        const users = StoreBill.getUsers();
+        // const users = StoreBill.getUsers();
+        const users = StoreUsers.getUsers();
         for(let i =1 ; i<=users.length;i++){
             let splitoption = document.createElement("option");
             splitoption.value = i;
@@ -79,7 +80,8 @@ class BillUI{
 
     static generateDynamicUser(ucount){
         const ubfdiv = document.getElementById('user-bill-form-div');
-        const users = StoreBill.getUsers();
+        // const users = StoreBill.getUsers();
+        const users = StoreUsers.getUsers();
         ubfdiv.innerHTML = "";
         let optionlist = '';
         for(let i=0;i<users.length;i++){
@@ -107,46 +109,72 @@ class BillUI{
 
 class StoreBill{
     static getBills(){
+        // $.blockUI();
         let bills = [];
-        if(localStorage.getItem('bills')===null){
-            bills = [];
-        }else{
-            bills = JSON.parse(localStorage.getItem('bills'));
+
+        var data = null;
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+
+        xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+            // console.log(this.responseText);
+            bills = JSON.parse(this.responseText);
+            // console.log(bills);
+            // $.unblockUI();
         }
+        });
+
+        xhr.open("GET", "https://splitwise-3e72.restdb.io/rest/billinfo",false);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("x-apikey", "5c3591fa66292476821c9dfd");
+        xhr.setRequestHeader("cache-control", "no-cache");
+
+        xhr.send(data);
+
         return bills;
     }
 
     static addBill(bill){
-        const bills = StoreBill.getBills();
-        bills.push(bill);
-        localStorage.setItem('bills',JSON.stringify(bills));
-    }
+        // $.blockUI();
+        console.log(JSON.stringify(bill));
+        var data = JSON.stringify(bill);
+          
+          var xhr = new XMLHttpRequest();
+          xhr.withCredentials = false;
+          
+          xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+              console.log(this.responseText);
+            //   $.unblockUI();
+            }
+          });
+          
+          xhr.open("POST", "https://splitwise-3e72.restdb.io/rest/billinfo",false);
+          xhr.setRequestHeader("content-type", "application/json");
+          xhr.setRequestHeader("x-apikey", "5c3591fa66292476821c9dfd");
+          xhr.setRequestHeader("cache-control", "no-cache");
+          
+          xhr.send(data);
 
-    static getUsers(){
-        let users = [];
-        if(localStorage.getItem('users')===null){
-            users = [];
-        }else{
-            users = JSON.parse(localStorage.getItem('users'));
-        }
-        return users;
     }
 
 }
 
 
 //Event : Display Bills
-window.onload = function() {
-    BillUI.displayBills();
-    BillUI.splitCountSelectList();
-};
+// window.onload = function() {
+//     BillUI.displayBills();
+//     BillUI.splitCountSelectList();
+// };
 
 //Event: Add a bill
 document.getElementById('bill-info-form').addEventListener('submit',(event)=>{
     event.preventDefault();
 
-    // const billFormInfo = document.forms['bill-info-form'].elements;
-    // console.log(billFormInfo);
+    $.blockUI();
+
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
     const userselected = document.getElementById('user-selected').value;
@@ -168,6 +196,6 @@ document.getElementById('bill-info-form').addEventListener('submit',(event)=>{
 
     BillUI.clearBillForm();
 
-
+    $.unblockUI();
 
 })

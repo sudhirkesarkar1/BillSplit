@@ -32,54 +32,123 @@ class UserUI{
         document.getElementById('uname').value='';
     }  
 
-    static showAlert(message,className){
+    static showAlert(message,className,timeOut=2000){
         const alertdiv = document.createElement('div');
-        alertdiv.className = `mt-2 alert alert-${className}`;
+        alertdiv.className = `mt-2 w-25 alert alert-${className}`;
         alertdiv.appendChild(document.createTextNode(message));
         document.getElementById('alert-info').appendChild(alertdiv);
 
         //vanish in 3 sec
         setTimeout(()=>{document.querySelector('.alert').remove()}
-        ,2000);
+        ,timeOut);
     }
 }
 
 //Store Class : To Handle Storage
 class StoreUsers{
     static getUsers(){
+        // $.blockUI();
         let users = [];
-        if(localStorage.getItem('users')===null){
-            users = [];
-        }else{
-            users = JSON.parse(localStorage.getItem('users'));
-        }
+        var data = null;
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+        
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            // console.log(this.responseText);
+            users = JSON.parse(this.responseText);
+            // console.log(users);
+            // $.unblockUI();
+           
+          }
+        });
+        
+        xhr.open("GET", "https://splitwise-3e72.restdb.io/rest/userdetails",false);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("x-apikey", "5c3591fa66292476821c9dfd");
+        xhr.setRequestHeader("cache-control", "no-cache");
+        
+        xhr.send(data);
         return users;
     }
 
     static addUser(user){
-        const users = StoreUsers.getUsers();
-        users.push(user);
-        localStorage.setItem('users',JSON.stringify(users));
+        // $.blockUI();
+        console.log(JSON.stringify(user));
+        var data = JSON.stringify(user);
+                 
+          var xhr = new XMLHttpRequest();
+          xhr.withCredentials = false;
+          
+          xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+              console.log(this.responseText);
+             // $.unblockUI();
+            }
+            
+          });
+          
+          xhr.open("POST", "https://splitwise-3e72.restdb.io/rest/userdetails",false);
+          xhr.setRequestHeader("content-type", "application/json");
+          xhr.setRequestHeader("x-apikey", "5c3591fa66292476821c9dfd");
+          xhr.setRequestHeader("cache-control", "no-cache");
+          
+          xhr.send(data);
     }
 
     static deleteUser(uname){
-        const users = StoreUsers.getUsers();
-        users.forEach((user,index)=>{
-            if(user.uname===uname){
-                users.splice(index,1);
+        // $.blockUI();
+        var data = null;
+        let reqobj = '';
+        let reqapicall = ''
+        let users = StoreUsers.getUsers();
+        for(let user of users){
+            if(user.uname === uname){
+                reqobj = user._id;
+                reqapicall = `https://splitwise-3e72.restdb.io/rest/userdetails/${reqobj}`;
+                break;
             }
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+                // $.unblockUI();
+            }
+            
         });
-        localStorage.setItem('users',JSON.stringify(users));
+
+        xhr.open("DELETE", reqapicall,false);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("x-apikey", "5c3591fa66292476821c9dfd");
+        xhr.setRequestHeader("cache-control", "no-cache");
+
+        xhr.send(data);
     }
 }
 
 
 //Event : Display Users
-document.addEventListener('DOMContentLoaded',UserUI.displayUsers);
+// document.addEventListener('DOMContentLoaded',UserUI.displayUsers);
+document.addEventListener('DOMContentLoaded',()=>{
+    UserUI.showAlert('UI Loading intitated','info');
+    UserUI.displayUsers();
+    BillUI.displayBills();
+    BillUI.splitCountSelectList();
+    UserUI.showAlert('UI Loading is Completed','info');
+});
 
 //Event : Add User
 document.getElementById('user-form').addEventListener('submit',(event)=>{
+
     event.preventDefault();
+
+    // $.blockUI();
+    UserUI.showAlert('User Add Request is Processing ','info',3000);
 
     const uname = document.getElementById('uname').value;
 
@@ -103,10 +172,15 @@ document.getElementById('user-form').addEventListener('submit',(event)=>{
 
     //Clear Fileds
     UserUI.clearUserForm();
+
+    $.unblockUI();
 })
 
 //Event: Remove User
 document.getElementById('user-list').addEventListener('click',(event)=>{
+
+    //  $.blockUI();
+    UserUI.showAlert('Delete user Request is Processing ','info',3000);
     //Remove User from UI
     UserUI.deleteUser(event.target);
 
@@ -121,4 +195,8 @@ document.getElementById('user-list').addEventListener('click',(event)=>{
 
     //Show delete alert
     UserUI.showAlert('User Deleted','success');
+
+    $.unblockUI();
 })
+
+// export {StoreUsers};
