@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
     <title>BillSplit</title>
 </head>
 <body>
@@ -14,6 +15,7 @@
                     <i class="far fa-money-bill-alt "></i>
                     <span class="text-primary">Bill</span>Split
                 </h1>
+        <div id="alert-info"></div>
         <div class="row">
             <div id = "user" class="col-sm-3 border">
                 Users
@@ -24,7 +26,7 @@
                     </div>
                     <input type="submit" value="Add User" class="btn btn-primary btn-block">
                 </form>
-                <div id="user-info-div" class="h-25 overflow-auto mt-3">
+                <div id="user-info-div" class="over-flow-height overflow-auto mt-3">
                     <table class="table table-striped mt-4">
                         <thead>
                             <tr>
@@ -33,57 +35,14 @@
                             </tr>
                         </thead>
                         <tbody id="user-list">
-                            <tr>
-                                <td>abc</td>
-                                <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            <tr>
-                                    <td>xyz</td>
-                                    <td><a href="#" class="btn btn-danger btn-sm delete">X</a> </td>
-                            </tr>
-                            
                         </tbody>
                     </table>
                  </div>
             </div>
             <div id ="binfo" class="col-sm-9 border">
-                <!-- <center>wqe</center> -->
-                
                 <div class="row">
                     <div  class="col-sm-8 border">Bill Details
-                        <div id="bill-details-grids" class="row overflow-auto h-50 border"></div>
+                        <div id="bill-details-grids" class="row over-flow-height overflow-auto border"></div>
                         <div id="bill-details" class="well border mt-2"></div>
                     </div>
                     <div  class="col-sm-4 border">
@@ -101,11 +60,11 @@
 
                             <div class="form-group col-4">
                                 <label for="userno">SplitCount:</label>
-                                <select class="custom-select" id="user-selected" onchange="test(this.value)">
-                                        <option value="0">0</option>
+                                <select class="custom-select" id="user-selected" onchange="BillUI.generateDynamicUser(this.value)">
+                                        <!-- <option value="0">0</option>
                                         <option value="1">One</option>
                                         <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                        <option value="3">Three</option> -->
                                 </select>
                             </div>
 
@@ -118,7 +77,10 @@
                 </div>
             </div>
         </div>
+       
     </div>
-    <script src="js/app.js"></script>
+    <!-- <script src="js/app.js"></script> -->
+    <script src="js/user.js"></script>
+    <script src="js/bill.js"></script>
 </body>
 </html>
